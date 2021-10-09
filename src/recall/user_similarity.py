@@ -41,3 +41,9 @@ def usercf_sim(behavior, save_path):
     pickle.dump(u2u_sim_, open(save_path + 'usercf_u2u_sim.pkl', 'wb'))
 
     return u2u_sim_
+
+
+if __name__ == '__main__':
+    behavior = pd.read_csv("Dataset/E-Commerce/behavior.csv", sep=",")
+    save_path = "output/similarity/"
+    usercf_sim(behavior, save_path)

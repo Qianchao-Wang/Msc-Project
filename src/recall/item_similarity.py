@@ -1,11 +1,12 @@
 import numpy as np
 import pandas as pd
-from src.utils.data_utils import get_user_item_time_dict
 from collections import defaultdict
 from tqdm import tqdm
 import pickle
 import math
-import sys, os
+import sys
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
+from src.utils.data_utils import get_user_item_time_dict
 
 
 

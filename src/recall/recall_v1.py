@@ -47,7 +47,7 @@ class ItemCF(object):
                 item_rank.setdefault(j, 0)
                 item_rank[j] += loc_weight * sim_ij
 
-        # if candidate items are less than 10, complete  with popular items
+        # if candidate items are less than recall_item_num, complete  with popular items
         if len(item_rank) < recall_item_num:
             for i, item in enumerate(item_topk_click):
                 if item in item_rank.items():  # The filled item should not be in the original list
