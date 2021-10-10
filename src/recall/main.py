@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 
 
 def main(args):
-    df = pd.read_csv(os.path.join(args.data_dir, "train.txt"), sep=',')
+    df = pd.read_csv(os.path.join(args.data_dir, "behavior.csv"), sep=',')
     if args.metric_recall:
         behavior_df, trn_last_behavior_df = get_hist_and_last_click(df)
     else:
@@ -35,7 +35,6 @@ def main(args):
 
     if args.metric_recall:
         metrics_recall(user_recall_items_dict, trn_last_behavior_df, topk=args.recall_item_num)
-
 
 
 if __name__ == '__main__':
