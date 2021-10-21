@@ -1,4 +1,4 @@
-
+import pandas as pd
 from collections import defaultdict
 from tqdm import tqdm
 import pickle
@@ -7,6 +7,7 @@ import sys
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_item_user_time_dict
 from src.utils.data_utils import get_user_activate_degree_dict
+from src.utils.data_utils import get_hist_and_last_click
 
 
 def usercf_sim(behavior, save_path):
@@ -29,8 +30,10 @@ def usercf_sim(behavior, save_path):
                 u2u_sim[u].setdefault(v, 0)
                 if u == v:
                     continue
-                activate_weight = 100 * 0.5 * (user_activate_degree_dict[u] + user_activate_degree_dict[v])
+
+                activate_weight = 0.9 ** (user_activate_degree_dict[u] + user_activate_degree_dict[v])
                 u2u_sim[u][v] += activate_weight / math.log(len(user_time_list) + 1)
+
 
     u2u_sim_ = u2u_sim.copy()
     for u, related_users in u2u_sim.items():
@@ -45,5 +48,6 @@ def usercf_sim(behavior, save_path):
 
 if __name__ == '__main__':
     behavior = pd.read_csv("Dataset/E-Commerce/behavior.csv", sep=",")
+    trn_hist_click_df, trn_last_click_df = get_hist_and_last_click(behavior)
     save_path = "output/similarity/"
-    usercf_sim(behavior, save_path)
+    usercf_sim(trn_hist_click_df, save_path)

@@ -5,9 +5,9 @@ from tqdm import tqdm
 import pickle
 import math
 import sys
-sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
+# sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
-
+from src.utils.data_utils import get_hist_and_last_click
 
 
 def itemcf_sim(behavior, save_path):
@@ -39,8 +39,8 @@ def itemcf_sim(behavior, save_path):
                 click_time_weight = np.exp(0.7 ** np.abs(i_click_time - j_click_time))
                 i2i_sim[i].setdefault(j, 0)
                 # Consider the weights of multiple factors to calculate the similarity between the items
-                i2i_sim[i][j] += loc_weight * click_time_weight / math.log(
-                    len(item_time_list) + 1)
+                i2i_sim[i][j] += loc_weight * click_time_weight / math.log(len(item_time_list) + 1)
+
 
     i2i_sim_ = i2i_sim.copy()
     for i, related_items in i2i_sim.items():
@@ -54,6 +54,10 @@ def itemcf_sim(behavior, save_path):
 
 
 if __name__ == '__main__':
-    behavior = pd.read_csv("Dataset/E-Commerce/behavior.csv", sep=",")
+
+    behavior = pd.read_csv("dataset/behavior_train.csv", sep=",")
+    print("---------------hist last----------------")
+    trn_hist_click_df, trn_last_click_df = get_hist_and_last_click(behavior)
     save_path = "output/similarity/"
-    itemcf_sim(behavior, save_path)
+    print("---------------calculate sim------------")
+    itemcf_sim(trn_hist_click_df, save_path)
