@@ -4,10 +4,12 @@ from collections import defaultdict
 from tqdm import tqdm
 import pickle
 import math
+import logging
 import sys
 # sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
 from src.utils.data_utils import get_hist_and_last_click
+from src.data_process.load_data import get_all_click_data
 
 
 def itemcf_sim(behavior, save_path):
@@ -54,10 +56,8 @@ def itemcf_sim(behavior, save_path):
 
 
 if __name__ == '__main__':
-
-    behavior = pd.read_csv("dataset/behavior_train.csv", sep=",")
-    print("---------------hist last----------------")
-    trn_hist_click_df, trn_last_click_df = get_hist_and_last_click(behavior)
+    print("--------load data----------------------")
+    all_click, click_test = get_all_click_data("online")
     save_path = "output/similarity/"
     print("---------------calculate sim------------")
-    itemcf_sim(trn_hist_click_df, save_path)
+    itemcf_sim(all_click, save_path)

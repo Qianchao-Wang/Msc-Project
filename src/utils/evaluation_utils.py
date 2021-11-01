@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def metrics_recall(user_recall_items_dict, trn_last_click_df, topk=5):
@@ -21,3 +22,35 @@ def metrics_recall(user_recall_items_dict, trn_last_click_df, topk=5):
 
         hit_rate = round(hit_num * 1.0 / user_num, 5)
         print(' topk: ', k, ' : ', 'hit_num: ', hit_num, 'hit_rate: ', hit_rate, 'user_num : ', user_num)
+
+
+def evaluate(predictions, answers, topk=100):
+    """
+
+    :param predictions: Recommended items returned by the model
+    :param answers: The next item the user actually clicked on
+    :param topk: evaluate the first topk recommended items
+    :return: ndcg and hitrate
+    """
+    ndcg, hitrate = [], []
+    for k in range(10, topk+1, 10):
+        ndcg_k = 0.0
+        hitrate_k = 0.0
+        num_cases = 0.0
+        for user_id, item_id in answers.items():
+            rank = 0
+            # Find the rank of the real item in the recommended list, if exist
+            while rank < k and predictions[user_id][rank] != item_id:
+                rank += 1
+            num_cases += 1
+            if rank < k:
+                ndcg_k += 1.0 / np.log2(rank + 2.0)
+                hitrate_k += 1
+
+        ndcg_k /= num_cases
+        hitrate_k /= num_cases
+        ndcg.append(ndcg_k)
+        hitrate.append(hitrate_k)
+
+    return ndcg, hitrate
+

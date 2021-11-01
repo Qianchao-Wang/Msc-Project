@@ -3,11 +3,13 @@ from collections import defaultdict
 from tqdm import tqdm
 import pickle
 import math
+import logging
 import sys
-sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
+# sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_item_user_time_dict
 from src.utils.data_utils import get_user_activate_degree_dict
 from src.utils.data_utils import get_hist_and_last_click
+from src.data_process.load_data import get_all_click_data
 
 
 def usercf_sim(behavior, save_path):
@@ -47,7 +49,8 @@ def usercf_sim(behavior, save_path):
 
 
 if __name__ == '__main__':
-    behavior = pd.read_csv("Dataset/E-Commerce/behavior.csv", sep=",")
-    trn_hist_click_df, trn_last_click_df = get_hist_and_last_click(behavior)
+    print("--------load data----------------------")
+    all_click, click_test = get_all_click_data("online")
     save_path = "output/similarity/"
-    usercf_sim(trn_hist_click_df, save_path)
+    print("---------------calculate sim------------")
+    usercf_sim(all_click, save_path)

@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 
-
 def get_user_item_time_dict(user_behavior):
     """
         Get the user's clicked item sequence according to the click time
@@ -87,7 +86,7 @@ def get_item_topk_click(user_behavior, k):
     :param k: k most popular items
     :return: Most clicked items
     """
-    topk_click = user_behavior['click_article_id'].value_counts().index[:k]
+    topk_click = user_behavior['item_id'].value_counts().index[:k]
     return topk_click
 
 
@@ -107,19 +106,3 @@ def get_user_activate_degree_dict(behavior):
 
     return user_activate_degree_dict
 
-
-def get_all_click_sample(data_path, sample_nums=10000):
-    """
-    Sampling part of the data for debugging
-    :param data_path: save address of data set
-    :param sample_nums: Number of samples
-    :return:
-    """
-    all_click = pd.read_csv(data_path + 'behavior.csv')
-    all_user_ids = all_click.user_id.unique()
-
-    sample_user_ids = np.random.choice(all_user_ids, size=sample_nums, replace=False)
-    all_click = all_click[all_click['user_id'].isin(sample_user_ids)]
-
-    all_click = all_click.drop_duplicates((['user_id', 'item_id', 'timestamp']))
-    return all_click

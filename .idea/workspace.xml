@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="97b8a3ec-cfe4-418e-bf82-ad312c2b142c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/MSC Project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MSC Project.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/TwoTower/layers/SampledSoftmaxLayer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/TwoTower/model/modeling_twotower.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/item_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/item_similarity.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/recall/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/recall_v1.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_itemcf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/recall_v2.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_usercf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/user_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/user_similarity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/data_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/evaluation_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/evaluation_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +42,88 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../daguan_competition_2021" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\python\Msc-Project\src\data_process" />
+      <recent name="C:\python\Msc-Project\src\models\SR-GNN\train" />
+      <recent name="C:\python\Msc-Project\src\models\TwoTower\train" />
+      <recent name="C:\python\Msc-Project\dataset" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="MSC Project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/models/TwoTower/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/models/TwoTower/train/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="modeling_twotower" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="MSC Project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/models/TwoTower/model" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/models/TwoTower/model/modeling_twotower.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="trainer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="MSC Project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/models/TwoTower/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/models/TwoTower/train/trainer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.trainer" />
+        <item itemvalue="Python.modeling_twotower" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -45,5 +137,35 @@
       <updated>1633380839301</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="541" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1635256947028">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state x="541" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1620.1040@0.0.1620.1040" timestamp="1635256947028" />
+    <state x="1117" y="246" key="FileChooserDialogImpl" timestamp="1635692410363">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state x="1117" y="246" key="FileChooserDialogImpl/0.0.1620.1040@0.0.1620.1040" timestamp="1635692410363" />
+    <state width="1600" height="444" key="GridCell.Tab.0.bottom" timestamp="1635087830107">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state width="1600" height="444" key="GridCell.Tab.0.bottom/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
+    <state width="1600" height="444" key="GridCell.Tab.0.center" timestamp="1635087830107">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state width="1600" height="444" key="GridCell.Tab.0.center/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
+    <state width="1600" height="444" key="GridCell.Tab.0.left" timestamp="1635087830107">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state width="1600" height="444" key="GridCell.Tab.0.left/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
+    <state width="1600" height="444" key="GridCell.Tab.0.right" timestamp="1635087830107">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state width="1600" height="444" key="GridCell.Tab.0.right/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
+    <state x="312" y="162" key="SettingsEditor" timestamp="1635086044302">
+      <screen x="0" y="0" width="1620" height="1040" />
+    </state>
+    <state x="312" y="162" key="SettingsEditor/0.0.1620.1040@0.0.1620.1040" timestamp="1635086044302" />
   </component>
 </project>
