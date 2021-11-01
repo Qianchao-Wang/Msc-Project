@@ -12,11 +12,11 @@ from datetime import datetime
 import sys
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
-from src.utils.data_utils import get_item_topk_click
+
 
 
 class ItemCF(object):
-    def __init__(self, args, behavior_dataset=None, i2i_sim=None):
+    def __init__(self, args, behavior_dataset=None, i2i_sim=None, item_topk_click=None):
         """
         Initialization class
         :param args: some Hyper parameters
@@ -27,7 +27,7 @@ class ItemCF(object):
         self.behavior = behavior_dataset
         self.user_item_time_dict = get_user_item_time_dict(self.behavior)
         # Get the list of items with the most clicks used for the user's candidate items completion
-        self.item_topk_click = get_item_topk_click(self.behavior, k=50)
+        self.item_topk_click = item_topk_click
         self.i2i_sim = i2i_sim
 
     # Item-based recall item2item

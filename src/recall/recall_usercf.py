@@ -6,12 +6,12 @@ from src.utils.data_utils import get_item_topk_click
 
 
 class UserCF(object):
-    def __init__(self, args, behavior_dataset=None, u2u_sim=None):
+    def __init__(self, args, behavior_dataset=None, u2u_sim=None, item_topk_click=None):
         self.args = args
         self.behavior = behavior_dataset
         self.user_item_time_dict = get_user_item_time_dict(self.behavior)
         # Get the list of items with the most clicks used for the user's candidate items completion
-        self.item_topk_click = get_item_topk_click(self.behavior, k=50)
+        self.item_topk_click = item_topk_click
         self.u2u_sim = u2u_sim
 
     def user_based_recommend(self, user_id):
@@ -27,14 +27,15 @@ class UserCF(object):
 
         items_rank = {}
         for sim_u, sim_uv in sorted(self.u2u_sim[user_id].items(), key=lambda x: x[1], reverse=True)[:self.args.sim_user_topk]:
-            for loc, (i, click_time) in enumerate(self.user_item_time_dict[sim_u]):
-                if i in user_hist_items:
-                    continue
-                items_rank.setdefault(i, 0)
+            if sim_u in self.user_item_time_dict.keys():
+                for loc, (i, click_time) in enumerate(self.user_item_time_dict[sim_u]):
+                    if i in user_hist_items:
+                        continue
+                    items_rank.setdefault(i, 0)
 
-                loc_weight = (0.9 ** (len(user_hist_items) - loc))
+                    loc_weight = (0.9 ** (len(user_hist_items) - loc))
 
-                items_rank[i] += loc_weight * sim_uv
+                    items_rank[i] += loc_weight * sim_uv
 
         # if candidate items are less than recall_item_num, complete  with popular items
         if len(items_rank) < self.args.recall_item_num:
