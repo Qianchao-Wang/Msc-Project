@@ -2,8 +2,8 @@ import tensorflow as tf
 import math
 import logging
 import numpy as np
-from src.models.sr_gnn.layers.ggnn import GGNN
-from src.models.sr_gnn.layers.node_aggregate import NodeMELast
+from src.recall.sr_gnn.layers.ggnn import GGNN
+from src.recall.sr_gnn.layers.node_aggregate import NodeMELast
 logger = logging.getLogger("model")
 tf.set_random_seed(2021)
 

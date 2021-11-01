@@ -2,7 +2,7 @@ import logging
 import argparse
 import sys, os
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
-from src.models.sr_gnn.train.trainer import Trainer
+from src.recall.sr_gnn.train.trainer import Trainer
 import warnings
 warnings.filterwarnings("ignore")
 

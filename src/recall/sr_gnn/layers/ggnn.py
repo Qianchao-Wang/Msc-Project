@@ -1,5 +1,5 @@
 import tensorflow as tf
-from src.models.sr_gnn.layers.block import Block
+from src.recall.sr_gnn.layers.block import Block
 
 
 class GGNN(Block):
