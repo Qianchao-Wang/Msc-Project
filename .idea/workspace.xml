@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="97b8a3ec-cfe4-418e-bf82-ad312c2b142c" name="Default Changelist" comment="" />
+    <list default="true" id="97b8a3ec-cfe4-418e-bf82-ad312c2b142c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/generate_sr_gnn_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/generate_sr_gnn_input.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/load_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/load_feat.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/load_feat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/split_data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Word2Vec/train_w2v.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rank/Word2Vec/train_w2v.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/combine_recall_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/combine_recall_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/item_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/similarity/item_similarity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/recall_itemcf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_itemcf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/recall_usercf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_usercf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/sr_gnn/train/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/sr_gnn/train/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/recall/user_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/similarity/user_similarity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/data_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_utils.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,10 +50,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\python\Msc-Project\src\recall" />
+      <recent name="C:\python\Msc-Project\src\recall\similarity" />
+      <recent name="C:\python\Msc-Project\src\rank" />
       <recent name="C:\python\Msc-Project\src\data_process" />
       <recent name="C:\python\Msc-Project\src\models\SR-GNN\train" />
-      <recent name="C:\python\Msc-Project\src\models\TwoTower\train" />
-      <recent name="C:\python\Msc-Project\dataset" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -130,10 +147,10 @@
       <screen x="0" y="0" width="1620" height="1040" />
     </state>
     <state x="541" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1620.1040@0.0.1620.1040" timestamp="1635256947028" />
-    <state x="1117" y="246" key="FileChooserDialogImpl" timestamp="1635692410363">
+    <state x="1117" y="246" key="FileChooserDialogImpl" timestamp="1636018236071">
       <screen x="0" y="0" width="1620" height="1040" />
     </state>
-    <state x="1117" y="246" key="FileChooserDialogImpl/0.0.1620.1040@0.0.1620.1040" timestamp="1635692410363" />
+    <state x="1117" y="246" key="FileChooserDialogImpl/0.0.1620.1040@0.0.1620.1040" timestamp="1636018236071" />
     <state width="1600" height="444" key="GridCell.Tab.0.bottom" timestamp="1635087830107">
       <screen x="0" y="0" width="1620" height="1040" />
     </state>

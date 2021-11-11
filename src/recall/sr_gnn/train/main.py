@@ -1,5 +1,6 @@
 import logging
 import argparse
+import re
 import sys, os
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.recall.sr_gnn.train.trainer import Trainer
@@ -30,7 +31,7 @@ def main(args):
         if not args.train_input:
             logger.error("Arg Error: --train_input")
             exit(-1)
-        trainer.train(args.train_input)
+        trainer.train()
     elif args.task == 'eval':
         if not args.eval_input:
             logger.error("Arg Error: --eval_input")

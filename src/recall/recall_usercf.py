@@ -42,7 +42,7 @@ class UserCF(object):
             for i, item in enumerate(self.item_topk_click):
                 if item in items_rank.items():  # The filled item should not be in the original list
                     continue
-                items_rank[item] = - i - 100
+                items_rank[item] = - i - 1
                 if len(items_rank) == self.args.recall_item_num:
                     break
 

@@ -1,18 +1,7 @@
-import pandas as pd
-import numpy as np
-from tqdm import tqdm
-from collections import defaultdict
-import collections
-import random
-import math
-import pickle
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import LabelEncoder
-from datetime import datetime
+
 import sys
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
-
 
 
 class ItemCF(object):
@@ -59,7 +48,7 @@ class ItemCF(object):
             for i, item in enumerate(self.item_topk_click):
                 if item in item_rank.items():  # The filled item should not be in the original list
                     continue
-                item_rank[item] = - i - 100
+                item_rank[item] = - i - 1
                 if len(item_rank) == self.args.recall_item_num:
                     break
 

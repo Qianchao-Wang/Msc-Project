@@ -8,6 +8,7 @@ sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
 from src.data_process.load_data import get_all_click_data
 from src.data_process.load_feat import obtain_entire_item_feat_df
+from src.utils.data_utils import get_hist_and_last_click
 
 
 def weighted_agg_content(hist_item_id_list, item_content_vec_dict):
@@ -32,8 +33,9 @@ def weighted_agg_content(hist_item_id_list, item_content_vec_dict):
 
 def init_item_user_embedding(item_content_vec_dict, mode):
     all_click, test_click = get_all_click_data(mode)
+    all_click, last_click = get_hist_and_last_click(all_click)
     user_item_time_hist_dict = get_user_item_time_dict(all_click)
-    sr_gnn_dir = "src/models/sr_gnn/input"
+    sr_gnn_dir = "src/models/sr_gnn/input/{}/".format(mode)
     lbe = LabelEncoder()
     lbe.fit(all_click['item_id'].astype(str))
     item_raw_id2_idx_dict = dict(zip(lbe.classes_, lbe.transform(lbe.classes_) + 1, ))  # get dictionary
@@ -50,20 +52,23 @@ def init_item_user_embedding(item_content_vec_dict, mode):
     for raw_id, idx in item_raw_id2_idx_dict.items():
         vec = item_content_vec_dict[int(raw_id)]
         item_embed_np[idx, :] = vec
-    np.save(open(sr_gnn_dir + '/item_embed_mat.npy', 'wb'), item_embed_np)
+    np.save(open(sr_gnn_dir + 'item_embed_mat.npy', 'wb'), item_embed_np)
 
     user_embed_np = np.zeros((user_cnt + 1, 256))
     for raw_id, idx in user_raw_id2_idx_dict.items():
         hist = user_item_time_hist_dict[int(raw_id)]
         vec = weighted_agg_content(hist, item_content_vec_dict)
         user_embed_np[idx, :] = vec
-    np.save(open(sr_gnn_dir + '/user_embed_mat.npy', 'wb'), user_embed_np)
+    np.save(open(sr_gnn_dir + 'user_embed_mat.npy', 'wb'), user_embed_np)
 
     return item_raw_id2_idx_dict, user_raw_id2_idx_dict
 
 
-def get_item_sequence():
-    all_click, test_click = get_all_click_data("online")
+def get_item_sequence(mode):
+    all_click, test_click = get_all_click_data(mode)
+    if mode == "offline":
+        all_click, last_click = get_hist_and_last_click(all_click)
+        test_click = all_click
     full_user_item_dict = get_user_item_time_dict(all_click)
     print(len(full_user_item_dict))
     # 4.1 train sequences
@@ -97,11 +102,10 @@ def get_item_sequence():
     return train_user_hist_seq_dict, test_user_hist_seq_dict, infer_user_hist_seq_dict, train_users, test_users
 
 
-def gen_data(sr_gnn_dir, is_attach_user=False):
-    processed_item_feat_df = pd.read_csv("Datasets/processed_item_feat.csv", sep=",")
-    item_content_vec_dict = pickle.load(open('Datasets/item_content_vec_dict.pkl'), 'rb')
-    item_raw_id2_idx_dict, user_raw_id2_idx_dict = init_item_user_embedding(item_content_vec_dict, "online")
-    train_user_hist_seq_dict, test_user_hist_seq_dict, infer_user_hist_seq_dict, train_users, test_users = get_item_sequence()
+def gen_data(sr_gnn_dir, mode, is_attach_user=False):
+    item_content_vec_dict = pickle.load(open('Datasets/item_content_vec_dict.pkl', 'rb'))
+    item_raw_id2_idx_dict, user_raw_id2_idx_dict = init_item_user_embedding(item_content_vec_dict, mode)
+    train_user_hist_seq_dict, test_user_hist_seq_dict, infer_user_hist_seq_dict, train_users, test_users = get_item_sequence(mode)
     with open(sr_gnn_dir + '/train_item_seq.txt', 'w') as f_seq, \
             open(sr_gnn_dir + '/train_user_sess.txt', 'w') as f_user:
         for u in train_users:
@@ -156,6 +160,9 @@ def gen_data(sr_gnn_dir, is_attach_user=False):
     with open(sr_gnn_dir + '/item_lookup.txt', 'w') as f_item_map:
         for raw_id, idx in item_raw_id2_idx_dict.items():
             f_item_map.write("{} {}\n".format(idx, raw_id))
+    with open(sr_gnn_dir + '/user_lookup.txt', 'w') as f_user_map:
+        for user_id, idx in user_raw_id2_idx_dict.items():
+            f_user_map.write("{} {}\n".format(idx, user_id))
 
 
 def data_augmentation(sr_gnn_dir, is_attach_user=False):
@@ -196,6 +203,6 @@ def data_augmentation(sr_gnn_dir, is_attach_user=False):
 
 
 if __name__ == "__main__":
-    sr_gnn_dir = "src/models/sr_gnn/input"
-    gen_data(sr_gnn_dir, is_attach_user=True)
+    sr_gnn_dir = "src/models/sr_gnn/input/offline"
+    gen_data(sr_gnn_dir, mode="offline",is_attach_user=True)
     data_augmentation(sr_gnn_dir, is_attach_user=True)

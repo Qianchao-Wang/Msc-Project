@@ -43,7 +43,6 @@ def itemcf_sim(behavior, save_path):
                 # Consider the weights of multiple factors to calculate the similarity between the items
                 i2i_sim[i][j] += loc_weight * click_time_weight / math.log(len(item_time_list) + 1)
 
-
     i2i_sim_ = i2i_sim.copy()
     for i, related_items in i2i_sim.items():
         for j, wij in related_items.items():
@@ -58,6 +57,7 @@ def itemcf_sim(behavior, save_path):
 if __name__ == '__main__':
     print("--------load data----------------------")
     all_click, click_test = get_all_click_data("online")
-    save_path = "output/similarity/"
+    user_hist_click, user_last_click = get_hist_and_last_click(all_click)
+    save_path = "output/offline/similarity/"
     print("---------------calculate sim------------")
-    itemcf_sim(all_click, save_path)
+    itemcf_sim(user_hist_click, save_path)

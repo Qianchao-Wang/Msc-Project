@@ -8,6 +8,7 @@ from src.utils.data_utils import get_user_item_time_dict
 from src.data_process.load_data import get_all_click_data
 from src.utils.data_utils import get_hist_and_last_click
 
+
 def get_item_feat_df(feat_dir):
     """
     :param feat_dir: String, the folder contain item feature file
@@ -59,8 +60,16 @@ def process_item_feat(item_feat_df):
     return processed_item_feat_df, item_content_vec_dict
 
 
-def fill_item_feat(processed_item_feat_df, item_content_vec_dict):
-    all_click, test_click = get_all_click_data("online")
+def fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode):
+    """
+
+    :param processed_item_feat_df:
+    :param item_content_vec_dict:
+    :param mode:
+    :return:
+    """
+    all_click, test_click = get_all_click_data(mode)
+    all_click, last_click = get_hist_and_last_click(all_click)
     # all items and items have feature vector
     all_click_item = set(all_click["item_id"])
     feat_item = set(processed_item_feat_df["item_id"])
@@ -113,17 +122,22 @@ def fill_item_feat(processed_item_feat_df, item_content_vec_dict):
     return miss_item_feat_df, miss_item_content_vec_dict
 
 
-def obtain_entire_item_feat_df():
+def obtain_entire_item_feat_df(mode):
+    """
+
+    :param mode:
+    :return:
+    """
     item_feat_df = get_item_feat_df("Datasets/")
     processed_item_feat_df, item_content_vec_dict = process_item_feat(item_feat_df)
-    miss_item_feat_df, miss_item_content_vec_dict = fill_item_feat(processed_item_feat_df, item_content_vec_dict)
+    miss_item_feat_df, miss_item_content_vec_dict = fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode)
 
     processed_item_feat_df = processed_item_feat_df.append(miss_item_feat_df)
     processed_item_feat_df = processed_item_feat_df.reset_index(drop=True)
 
     item_content_vec_dict.update(miss_item_content_vec_dict)
 
-    processed_item_feat_df.to_csv("Datasets/processed_item_feat.csv", sep=",")
-    pickle.dump(item_content_vec_dict, open('Datasets/item_content_vec_dict.pkl', 'wb'))
+    processed_item_feat_df.to_csv("Datasets/{}/processed_item_feat.csv".format(mode), sep=",")
+    pickle.dump(item_content_vec_dict, open('Datasets/{}/item_content_vec_dict.pkl'.format(mode), 'wb'))
     return processed_item_feat_df, item_content_vec_dict
 

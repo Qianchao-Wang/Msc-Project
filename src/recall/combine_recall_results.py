@@ -25,10 +25,9 @@ def norm_user_recall_items_sim(sorted_item_list):
 def combine_recall_results(user_multi_recall_dict, weight_dict=None, save_path="output/Candidate/"):
     final_recall_items_dict = {}
 
-    print('多路召回合并...')
     for method, user_recall_items in tqdm(user_multi_recall_dict.items()):
         print(method + '...')
-        # 在计算最终召回结果的时候，也可以为每一种召回结果设置一个权重
+        # When calculating the final recall result, set a weight for each recall result
         if weight_dict == None:
             recall_method_weight = 1
         else:
@@ -45,9 +44,9 @@ def combine_recall_results(user_multi_recall_dict, weight_dict=None, save_path="
                 final_recall_items_dict[user_id][item] += recall_method_weight * score
 
     final_recall_items_dict_rank = {}
-    # 多路召回时也可以控制最终的召回数量
+
     for user, recall_item_dict in final_recall_items_dict.items():
-        final_recall_items_dict_rank[user] = sorted(recall_item_dict.items(), key=lambda x: x[1], reverse=True)
+        final_recall_items_dict_rank[user] = sorted(recall_item_dict.items(), key=lambda x: x[1], reverse=True)[:700]
 
     # 将多路召回后的最终结果字典保存到本地
     pickle.dump(final_recall_items_dict_rank, open(os.path.join(save_path, 'final_recall_items_dict.pkl'), 'wb'))
