@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import sys, os
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.data_process.load_data import get_recall_list
 from src.utils.data_utils import get_hist_and_last_click
 from src.data_process.load_data import get_all_click_data
@@ -41,7 +43,7 @@ def neg_sample_recall_data(recall_items_df, sample_rate=0.001):
     def neg_sample_func(group_df):
         neg_num = len(group_df)
         sample_num = max(int(neg_num * sample_rate), 1)  # Ensure that there is at least one negative sample
-        sample_num = min(sample_num, 5)  # Up to 5 negative samples
+        sample_num = min(sample_num, 2)  # Up to 5 negative samples
         return group_df.sample(n=sample_num, replace=True)
 
     # Negative sampling for users and ensuring that all users are in the sampled data
@@ -101,6 +103,9 @@ def get_user_recall_item_label_df(click_trn_hist, click_tst_hist, click_trn_last
     # The test data does not need negative sampling, and all recalled items are directly labeled with - 1
     tst_user_items_df = recall_list_df[recall_list_df['user_id'].isin(click_tst_hist['user_id'].unique())]
     tst_user_item_label_df = get_rank_label_df(tst_user_items_df, None, is_test=True)
+    pos_data = trn_user_item_label_df[trn_user_item_label_df["label"] == 1.0]
+    neg_data = trn_user_item_label_df[trn_user_item_label_df["label"] == 0.0]
+    print('pos_data_num:', len(pos_data), 'neg_data_num:', len(neg_data), 'pos/neg:', len(pos_data) / len(neg_data))
 
     return trn_user_item_label_df, tst_user_item_label_df
 
@@ -113,8 +118,8 @@ if __name__ == "__main__":
 
     all_click, click_tst_hist = get_all_click_data("online")
 
-    trn_recall_list_dict = get_recall_list('Datasets/rank/offline/Candidate/', multi_recall=True)
-    tst_recall_list_dict = get_recall_list('Datasets/rank/online/Candidate/', multi_recall=True)
+    trn_recall_list_dict = get_recall_list('output/offline/Candidate/', multi_recall=True)
+    tst_recall_list_dict = get_recall_list('output/online/Candidate/', multi_recall=True)
     trn_recall_list_df = recall_dict_2_df(trn_recall_list_dict)
     tst_recall_list_df = recall_dict_2_df(tst_recall_list_dict)
     recall_list_df = trn_recall_list_df.append(tst_recall_list_df)

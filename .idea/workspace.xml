@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="97b8a3ec-cfe4-418e-bf82-ad312c2b142c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_process/generate_sr_gnn_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/generate_sr_gnn_input.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_process/load_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/load_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_process/load_feat.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/load_feat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_process/split_data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/Word2Vec/train_w2v.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rank/Word2Vec/train_w2v.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/combine_recall_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/combine_recall_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/item_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/similarity/item_similarity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/recall_itemcf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_itemcf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/recall_usercf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/recall_usercf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/sr_gnn/train/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/sr_gnn/train/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/recall/user_similarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/recall/similarity/user_similarity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/generate_rank_feature.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/generate_rank_feature.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_process/generate_rank_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_process/generate_rank_input.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/rank/GBDT_rank.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rank/GBDT_rank.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/rank/Word2Vec/train_w2v.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rank/Word2Vec/train_w2v.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/data_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/data_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -39,25 +33,46 @@
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../daguan_competition_2021" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Anaconda3/Scripts/conda.exe" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Python\Msc-Project\src\rank" />
+      <recent name="C:\Python\Msc-Project\src\recall" />
       <recent name="C:\python\Msc-Project\src\recall" />
       <recent name="C:\python\Msc-Project\src\recall\similarity" />
       <recent name="C:\python\Msc-Project\src\rank" />
-      <recent name="C:\python\Msc-Project\src\data_process" />
-      <recent name="C:\python\Msc-Project\src\models\SR-GNN\train" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.GBDT_rank">
+    <configuration name="GBDT_rank" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="MSC Project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/rank" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/rank/GBDT_rank.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="MSC Project" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -123,12 +138,14 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.GBDT_rank" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.trainer" />
         <item itemvalue="Python.modeling_twotower" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -142,34 +159,16 @@
     </task>
     <servers />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="541" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1635256947028">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state x="541" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1620.1040@0.0.1620.1040" timestamp="1635256947028" />
-    <state x="1117" y="246" key="FileChooserDialogImpl" timestamp="1636018236071">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state x="1117" y="246" key="FileChooserDialogImpl/0.0.1620.1040@0.0.1620.1040" timestamp="1636018236071" />
-    <state width="1600" height="444" key="GridCell.Tab.0.bottom" timestamp="1635087830107">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state width="1600" height="444" key="GridCell.Tab.0.bottom/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
-    <state width="1600" height="444" key="GridCell.Tab.0.center" timestamp="1635087830107">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state width="1600" height="444" key="GridCell.Tab.0.center/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
-    <state width="1600" height="444" key="GridCell.Tab.0.left" timestamp="1635087830107">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state width="1600" height="444" key="GridCell.Tab.0.left/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
-    <state width="1600" height="444" key="GridCell.Tab.0.right" timestamp="1635087830107">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state width="1600" height="444" key="GridCell.Tab.0.right/0.0.1620.1040@0.0.1620.1040" timestamp="1635087830107" />
-    <state x="312" y="162" key="SettingsEditor" timestamp="1635086044302">
-      <screen x="0" y="0" width="1620" height="1040" />
-    </state>
-    <state x="312" y="162" key="SettingsEditor/0.0.1620.1040@0.0.1620.1040" timestamp="1635086044302" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

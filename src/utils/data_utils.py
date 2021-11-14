@@ -108,7 +108,23 @@ def get_user_activate_degree_dict(behavior):
     return user_activate_degree_dict
 
 
-def cal_cos_sim(emb1, emb2):
+def get_item_popular_degree_dict(behavior):
+    """
+
+    :param behavior:
+    :return:
+    """
+    behavior_ = behavior.groupby('item_id')['user_id'].count().reset_index()
+
+    # User activity normalization
+    mm = MinMaxScaler()
+    behavior_['user_id'] = mm.fit_transform(behavior_[['user_id']])
+    item_popular_degree_dict = dict(zip(behavior_['item_id'], behavior_['user_id']))
+
+    return item_popular_degree_dict
+
+
+def get_cos_sim(emb1, emb2):
     """
     Calculate cosine similarity between emb1 and emb2
     :param emb1:

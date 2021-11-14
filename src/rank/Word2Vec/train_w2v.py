@@ -6,11 +6,12 @@ import pandas as pd
 import psutil
 import pickle
 import logging
-import sys
+import sys, os
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.data_process.load_data import get_all_click_data
 
 
-def train_w2v_model(click_df, save_path, embed_size=64):
+def train_w2v_model(click_df, save_path):
     # sorted by timestamp
     click_df = click_df.sort_values('timestamp')
     # convert to string
@@ -33,7 +34,7 @@ def train_w2v_model(click_df, save_path, embed_size=64):
 
 
 if __name__ == "__main__":
-    model_save_dir = "output/w2v_embedding/"
+    model_save_dir = "Datasets/"
     all_click, test_click = get_all_click_data("online")
 
     train_w2v_model(all_click, model_save_dir)
