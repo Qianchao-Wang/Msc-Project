@@ -34,10 +34,13 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
     k_fold = 5
     trn_df = trn_final_df.copy()
     user_set = get_kfold_users(trn_df, n=k_fold)
-    lgb_cols = ["score"]
+    lgb_cols = ["score", "max_i2i_sim", "mean_i2i_sim", "var_i2i_sim", "max_content_sim", "mean_content_sim",
+                "var_content_sim", "max_w2v_sim", "mean_w2v_sim", "var_w2v_sim", "item_sim_1", "item_sim_2",
+                "item_sim_3", "content_sim_1", "content_sim_2", "content_sim_3", "w2v_sim_1", "w2v_sim_2",
+                "w2v_sim_3", "user_activate", "item_popular"]
 
     score_list = []
-    score_df = trn_df[['user_id', 'item_id', 'label']]
+    score_df = trn_df[['user_id', 'sim_item', 'label']]
     sub_preds = np.zeros(tst_final_df.shape[0])
 
     # 五折交叉验证，并将中间结果保存用于staking
@@ -72,14 +75,14 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
         valid_idx['pred_rank'] = valid_idx.groupby(['user_id'])['pred_score'].rank(ascending=False, method='first')
 
         # 将验证集的预测结果放到一个列表中，后面进行拼接
-        score_list.append(valid_idx[['user_id', 'item_id', 'pred_score', 'pred_rank']])
+        score_list.append(valid_idx[['user_id', 'sim_item', 'pred_score', 'pred_rank']])
 
         sub_preds += lgb_ranker.predict(tst_final_df[lgb_cols], lgb_ranker.best_iteration_)
 
     score_df_ = pd.concat(score_list, axis=0)
-    score_df = score_df.merge(score_df_, how='left', on=['user_id', 'item_id'])
+    score_df = score_df.merge(score_df_, how='left', on=['user_id', 'sim_item'])
     # 保存训练集交叉验证产生的新特征
-    score_df[['user_id', 'item_id', 'pred_score', 'pred_rank', 'label']].to_csv(
+    score_df[['user_id', 'sim_item', 'pred_score', 'pred_rank', 'label']].to_csv(
         save_path + 'trn_lgb_ranker_feats.csv', index=False)
 
     # 测试集的预测结果，多次交叉验证求平均,将预测的score和对应的rank特征保存，可以用于后面的staking，这里还可以构造其他更多的特征
@@ -91,5 +94,12 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
         'pred_score'].rank(ascending=False, method='first')
 
     # 保存测试集交叉验证的新特征
-    tst_final_df[['user_id', 'item_id', 'pred_score', 'pred_rank']].to_csv(
+    tst_final_df[['user_id', 'sim_item', 'pred_score', 'pred_rank']].to_csv(
         save_path + 'tst_lgb_ranker_feats.csv', index=False)
+
+
+if __name__ == "__main__":
+    trn_final_df = pd.read_csv("Datasets/rank/trn_user_item_label_feat_df.csv")
+    tst_final_df = pd.read_csv("Datasets/rank/tst_user_item_label_feat_df.csv")
+    save_path = "output/rank/"
+    lgb_main(trn_final_df, tst_final_df, save_path)
