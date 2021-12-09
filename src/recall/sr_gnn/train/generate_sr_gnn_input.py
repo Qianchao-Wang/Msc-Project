@@ -3,9 +3,6 @@ import numpy as np
 import pandas as pd
 import os
 import pickle
-import warnings
-warnings.filterwarnings("ignore")
-import argparse
 import sys, os
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
@@ -36,9 +33,9 @@ def weighted_agg_content(hist_item_id_list, item_content_vec_dict):
 
 def init_item_user_embedding(item_content_vec_dict, mode):
     all_click, test_click = get_all_click_data(mode)
-    hist_click, last_click = get_hist_and_last_click(all_click)
-    user_item_time_hist_dict = get_user_item_time_dict(hist_click)
-    sr_gnn_dir = "Datasets/{}/srgnn/".format(mode)
+    all_click, last_click = get_hist_and_last_click(all_click)
+    user_item_time_hist_dict = get_user_item_time_dict(all_click)
+    sr_gnn_dir = "src/models/sr_gnn/input"
     lbe = LabelEncoder()
     lbe.fit(all_click['item_id'].astype(str))
     item_raw_id2_idx_dict = dict(zip(lbe.classes_, lbe.transform(lbe.classes_) + 1, ))  # get dictionary
@@ -55,14 +52,14 @@ def init_item_user_embedding(item_content_vec_dict, mode):
     for raw_id, idx in item_raw_id2_idx_dict.items():
         vec = item_content_vec_dict[int(raw_id)]
         item_embed_np[idx, :] = vec
-    np.save(open(sr_gnn_dir + 'item_embed_mat.npy', 'wb'), item_embed_np)
+    np.save(open(sr_gnn_dir + '/{}/item_embed_mat.npy'.format(mode), 'wb'), item_embed_np)
 
     user_embed_np = np.zeros((user_cnt + 1, 256))
     for raw_id, idx in user_raw_id2_idx_dict.items():
         hist = user_item_time_hist_dict[int(raw_id)]
         vec = weighted_agg_content(hist, item_content_vec_dict)
         user_embed_np[idx, :] = vec
-    np.save(open(sr_gnn_dir + 'user_embed_mat.npy', 'wb'), user_embed_np)
+    np.save(open(sr_gnn_dir + '/{}/user_embed_mat.npy'.format(mode), 'wb'), user_embed_np)
 
     return item_raw_id2_idx_dict, user_raw_id2_idx_dict
 
@@ -106,11 +103,12 @@ def get_item_sequence(mode):
 
 
 def gen_data(sr_gnn_dir, mode, is_attach_user=False):
-    item_content_vec_dict = pickle.load(open('Datasets/online/item_content_vec_dict.pkl', 'rb'))
+    processed_item_feat_df = pd.read_csv("Datasets/{}/processed_item_feat.csv".format(mode), sep=",")
+    item_content_vec_dict = pickle.load(open('Datasets/{}/item_content_vec_dict.pkl'.format(mode), 'rb'))
     item_raw_id2_idx_dict, user_raw_id2_idx_dict = init_item_user_embedding(item_content_vec_dict, mode)
     train_user_hist_seq_dict, test_user_hist_seq_dict, infer_user_hist_seq_dict, train_users, test_users = get_item_sequence(mode)
-    with open(sr_gnn_dir + '/train_item_seq.txt', 'w') as f_seq, \
-            open(sr_gnn_dir + '/train_user_sess.txt', 'w') as f_user:
+    with open(sr_gnn_dir + '/{}/train_item_seq.txt'.format(mode), 'w') as f_seq, \
+            open(sr_gnn_dir + '/{}/train_user_sess.txt'.format(mode), 'w') as f_user:
         for u in train_users:
             u_idx = user_raw_id2_idx_dict[str(u)]
             hist_item_time_seq = train_user_hist_seq_dict[u]
@@ -131,8 +129,8 @@ def gen_data(sr_gnn_dir, mode, is_attach_user=False):
             hist_item_user_sess_str = " ".join(hist_item_user_sess)
             f_user.write(hist_item_user_sess_str + '\n')
 
-    with open(sr_gnn_dir + '/test_item_seq.txt', 'w') as f_seq, open(sr_gnn_dir + '/test_user_sess.txt',
-                                                                          'w') as f_user:
+    with open(sr_gnn_dir + '/{}/test_item_seq.txt'.format(mode), 'w') as f_seq, \
+            open(sr_gnn_dir + '/{}/test_user_sess.txt'.format(mode),'w') as f_user:
         for u in test_users:
             # test
             if u in test_user_hist_seq_dict:
@@ -160,21 +158,21 @@ def gen_data(sr_gnn_dir, mode, is_attach_user=False):
                 hist_item_user_sess_str = " ".join(hist_item_user_sess)
                 f_user.write(hist_item_user_sess_str + '\n')
 
-    with open(sr_gnn_dir + '/item_lookup.txt', 'w') as f_item_map:
+    with open(sr_gnn_dir + '/{}/item_lookup.txt'.format(mode), 'w') as f_item_map:
         for raw_id, idx in item_raw_id2_idx_dict.items():
             f_item_map.write("{} {}\n".format(idx, raw_id))
-    with open(sr_gnn_dir + '/user_lookup.txt', 'w') as f_user_map:
+    with open(sr_gnn_dir + '/{}/user_lookup.txt'.format(mode), 'w') as f_user_map:
         for user_id, idx in user_raw_id2_idx_dict.items():
             f_user_map.write("{} {}\n".format(idx, user_id))
 
 
-def data_augmentation(sr_gnn_dir, is_attach_user=False):
+def data_augmentation(sr_gnn_dir, mode, is_attach_user=False):
     np.random.seed(2021)
     count = 0
     max_len = 10
     tmp_max = 0
-    with open(sr_gnn_dir + '/train_item_seq.txt', 'r') as f_in, open(
-            sr_gnn_dir + '/train_item_seq_enhanced.txt', 'w') as f_out:
+    with open(sr_gnn_dir + '/{}/train_item_seq.txt'.format(mode), 'r') as f_in, open(
+            sr_gnn_dir + '/{}/train_item_seq_enhanced.txt'.format(mode), 'w') as f_out:
         for line in f_in:
             row = line.strip().split()
 
@@ -206,10 +204,6 @@ def data_augmentation(sr_gnn_dir, is_attach_user=False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", default=None, required=True, type=str, help="online or offline")
-    args = parser.parse_args()
-    sr_gnn_dir = "Datasets/{}/srgnn".format(args.mode)
-    gen_data(sr_gnn_dir, mode=args.mode,is_attach_user=True)
-    data_augmentation(sr_gnn_dir, is_attach_user=True)
-
+    sr_gnn_dir = "src/models/sr_gnn/input"
+    gen_data(sr_gnn_dir, mode="offline",is_attach_user=True)
+    data_augmentation(sr_gnn_dir, mode="offline", is_attach_user=True)

@@ -13,7 +13,7 @@ class DataLoader:
         self.sq_max_len = sq_max_len
         self.__load(path)
         self.length = len(self.inputs)
-        logging.info('Data Loaded, Length: {}， Max Length: {}'.format(self.length, self.max_len))
+        logging.info('Data Loaded, Length: {}ï¼Œ Max Length: {}'.format(self.length, self.max_len))
         self.shuffle = shuffle
 
     @property
@@ -129,8 +129,8 @@ class DataLoader:
         if self.sq_max_len is not None:
             attr_dict['node_pos'] = node_position
         return adj_in, adj_out, graph_items, last_node_id, attr_dict
-
-
+        
+'''
 if __name__ == "__main__":
     train_path = "src/models/sr_gnn/input/train_item_seq_enhanced.txt"
     max_len = 20
@@ -139,5 +139,5 @@ if __name__ == "__main__":
     train = DataLoader(train_path, max_len=max_len, has_uid=has_uid, sq_max_len=sq_max_len)
     slices = train.generate_batch(256)
     for index, i in enumerate(slices):
-        print(i)
         adj_in, adj_out, graph_item, last_node_id, attr_dict = train.get_slice(i)
+'''

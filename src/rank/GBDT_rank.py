@@ -8,6 +8,7 @@ from datetime import datetime
 import lightgbm as lgb
 from sklearn.preprocessing import MinMaxScaler
 import warnings
+import argparse
 warnings.filterwarnings('ignore')
 
 
@@ -37,7 +38,7 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
     lgb_cols = ["score", "max_i2i_sim", "mean_i2i_sim", "var_i2i_sim", "max_content_sim", "mean_content_sim",
                 "var_content_sim", "max_w2v_sim", "mean_w2v_sim", "var_w2v_sim", "item_sim_1", "item_sim_2",
                 "item_sim_3", "content_sim_1", "content_sim_2", "content_sim_3", "w2v_sim_1", "w2v_sim_2",
-                "w2v_sim_3", "user_activate", "item_popular"]
+                "w2v_sim_3", "user_activate"]
 
     score_list = []
     score_df = trn_df[['user_id', 'sim_item', 'label']]
@@ -63,7 +64,7 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
         # 训练模型
         lgb_ranker.fit(train_idx[lgb_cols], train_idx['label'], group=g_train,
                        eval_set=[(valid_idx[lgb_cols], valid_idx['label'])], eval_group=[g_val],
-                       eval_at=[1, 2, 3, 4, 5], eval_metric=['ndcg', ], early_stopping_rounds=50, )
+                       eval_at=[10, 20, 30, 40, 50], eval_metric=['ndcg', ], early_stopping_rounds=50, )
 
         # 预测验证集结果
         valid_idx['pred_score'] = lgb_ranker.predict(valid_idx[lgb_cols], num_iteration=lgb_ranker.best_iteration_)
@@ -96,10 +97,17 @@ def lgb_main(trn_final_df, tst_final_df, save_path):
     # 保存测试集交叉验证的新特征
     tst_final_df[['user_id', 'sim_item', 'pred_score', 'pred_rank']].to_csv(
         save_path + 'tst_lgb_ranker_feats.csv', index=False)
-
-
+        
 if __name__ == "__main__":
-    trn_final_df = pd.read_csv("Datasets/rank/trn_user_item_label_feat_df.csv")
-    tst_final_df = pd.read_csv("Datasets/rank/tst_user_item_label_feat_df.csv")
-    save_path = "output/rank/"
+    parser = argparse.ArgumentParser()
+    task = ['itemcf', 'usercf', 'srgnn']
+    parser.add_argument("--task", default=None, required=True, type=str, choices=task, help="The name of the task")
+    args = parser.parse_args()
+    
+    trn_df_path = "Datasets/rank/{}/trn_user_item_label_feat_df.csv".format(args.task)
+    tst_df_path = "Datasets/rank/{}/tst_user_item_label_feat_df.csv".format(args.task)
+    trn_final_df = pd.read_csv(trn_df_path)
+    tst_final_df = pd.read_csv(tst_df_path)
+    
+    save_path = "output/rank/{}/".format(args.task)
     lgb_main(trn_final_df, tst_final_df, save_path)

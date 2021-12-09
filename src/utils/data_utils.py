@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import time
+import pickle
 
 
 def get_user_item_time_dict(user_behavior):
@@ -106,7 +107,7 @@ def get_user_activate_degree_dict(behavior):
     user_activate_degree_dict = dict(zip(behavior_['user_id'], behavior_['item_id']))
 
     return user_activate_degree_dict
-
+    
 
 def get_item_popular_degree_dict(behavior):
     """
@@ -134,6 +135,33 @@ def get_cos_sim(emb1, emb2):
     return np.dot(emb1, emb2) / (np.linalg.norm(emb1) * np.linalg.norm(emb2))
 
 
+def get_all_click_sample(data_path, sample_nums=10000):
+    """
+    Sampling part of the data for debugging
+    :param data_path: save address of data set
+    :param sample_nums: Number of samples
+    :return:
+    """
+    all_click = pd.read_csv(data_path + 'behavior.csv')
+    all_user_ids = all_click.user_id.unique()
+
+    sample_user_ids = np.random.choice(all_user_ids, size=sample_nums, replace=False)
+    all_click = all_click[all_click['user_id'].isin(sample_user_ids)]
+
+    all_click = all_click.drop_duplicates((['user_id', 'item_id', 'timestamp']))
+    return all_click
+
+
+def cal_cos_sim(emb1, emb2):
+    """
+    Calculate cosine similarity between emb1 and emb2
+    :param emb1:
+    :param emb2:
+    :return: cosine similarity
+    """
+    return np.dot(emb1, emb2) / (np.linalg.norm(emb1) * np.linalg.norm(emb2))
+
+    
 def reduce_memory(df):
     """
     reduce the memory of Dataframe
@@ -171,5 +199,3 @@ def reduce_memory(df):
                                                                                                            100*(start_mem-end_mem)/start_mem,
                                                                                                             (time.time()-starttime)/60))
     return df
-
-

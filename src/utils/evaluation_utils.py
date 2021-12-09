@@ -1,4 +1,3 @@
-import numpy as np
 
 
 def metrics_recall(user_recall_items_dict, trn_last_click_df, topk=5):
@@ -26,7 +25,6 @@ def metrics_recall(user_recall_items_dict, trn_last_click_df, topk=5):
 
 def evaluate(predictions, answers, topk=100):
     """
-
     :param predictions: Recommended items returned by the model
     :param answers: The next item the user actually clicked on
     :param topk: evaluate the first topk recommended items
@@ -53,4 +51,3 @@ def evaluate(predictions, answers, topk=100):
         hitrate.append(hitrate_k)
 
     return ndcg, hitrate
-

@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
+import argparse
 import sys, os
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
@@ -10,7 +13,6 @@ from src.utils.data_utils import get_cos_sim
 from src.utils.data_utils import get_user_activate_degree_dict
 from src.utils.data_utils import get_item_popular_degree_dict
 from src.utils.data_utils import get_hist_and_last_click
-
 
 def get_item_similarity_feature(i2i_sim_dict, label_df, behavior_df):
     """
@@ -224,34 +226,39 @@ def get_items_popular_feature(label_df, behavior_df):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    task = ['itemcf', 'usercf', 'srgnn']
+    parser.add_argument("--task", default=None, required=True, type=str, choices=task, help="The name of the task")
+    args = parser.parse_args()
+    
     offline_sim_dir = "output/offline/similarity/"
-    i2i_sim_dict = pickle.load(open(os.path.join(offline_sim_dir, 'itemcf_i2i_sim_v2.pkl'), 'rb'))
+    i2i_sim_dict = pickle.load(open(os.path.join(offline_sim_dir, 'itemcf_i2i_sim.pkl'), 'rb'))
     content_emd_dict = pickle.load(open(os.path.join("Datasets/offline", 'item_content_vec_dict.pkl'), 'rb'))
     w2v_emd_dict = pickle.load(open(os.path.join("Datasets/", 'item_w2v_emb.pkl'), 'rb'))
-
-    trn_label_df = pd.read_csv("Datasets/rank/trn_user_item_label_df.csv", sep=',', encoding='utf-8')
-    tst_label_df = pd.read_csv("Datasets/rank/tst_user_item_label_df.csv", sep=',', encoding='utf-8')
+    
+    save_path = 'Datasets/rank/{}/'.format(args.task)
+    trn_label_df = pd.read_csv(save_path+"trn_user_item_label_df.csv", sep=',', encoding='utf-8')
+    tst_label_df = pd.read_csv(save_path+"tst_user_item_label_df.csv", sep=',', encoding='utf-8')
     trn_click, test_click = get_all_click_data("offline")
     trn_hist_click, trn_last_click = get_hist_and_last_click(trn_click)
 
     trn_item_sim_feat_df = get_item_similarity_feature(i2i_sim_dict, trn_label_df, trn_hist_click)
     trn_content_sim_feat_df = get_content_similarity_feature(content_emd_dict, trn_label_df, trn_hist_click)
     trn_w2v_sim_feat_df = get_w2v_similarity_feature(w2v_emd_dict, trn_label_df, trn_hist_click)
-    trn_nearest_sim_feat_df = get_nearest_similarity_feature(i2i_sim_dict, w2v_emd_dict, content_emd_dict, trn_label_df,
-                                                             trn_hist_click)
+    trn_nearest_sim_feat_df = get_nearest_similarity_feature(i2i_sim_dict, w2v_emd_dict, content_emd_dict, trn_label_df, trn_hist_click)
     trn_user_activate_feature_df = get_users_activate_feature(trn_label_df, trn_hist_click)
-    trn_item_popular_feature_df = get_items_popular_feature(trn_label_df, trn_hist_click)
+    # trn_item_popular_feature_df = get_items_popular_feature(trn_label_df, trn_hist_click)
 
     trn_label_df = trn_label_df.merge(trn_item_sim_feat_df, on=["user_id", "sim_item"])
     trn_label_df = trn_label_df.merge(trn_content_sim_feat_df, on=["user_id", "sim_item"])
     trn_label_df = trn_label_df.merge(trn_w2v_sim_feat_df, on=["user_id", "sim_item"])
     trn_label_df = trn_label_df.merge(trn_nearest_sim_feat_df, on=["user_id", "sim_item"])
     trn_label_df = trn_label_df.merge(trn_user_activate_feature_df, on=["user_id", "sim_item"])
-    trn_label_df = trn_label_df.merge(trn_item_popular_feature_df, on=["user_id", "sim_item"])
-    trn_label_df.to_csv("Datasets/rank/trn_user_item_label_feat_df.csv")
+    # trn_label_df = trn_label_df.merge(trn_item_popular_feature_df, on=["user_id", "sim_item"])
+    trn_label_df.to_csv(save_path+"trn_user_item_label_feat_df.csv")
 
     online_sim_dir = "output/online/similarity/"
-    online_i2i_sim_dict = pickle.load(open(os.path.join(online_sim_dir, 'itemcf_i2i_sim_v2.pkl'), 'rb'))
+    online_i2i_sim_dict = pickle.load(open(os.path.join(online_sim_dir, 'itemcf_i2i_sim.pkl'), 'rb'))
     online_content_emd_dict = pickle.load(open(os.path.join("Datasets/online", 'item_content_vec_dict.pkl'), 'rb'))
     online_w2v_emd_dict = pickle.load(open(os.path.join("Datasets/", 'item_w2v_emb.pkl'), 'rb'))
     all_click, tst_click = get_all_click_data("online")
@@ -262,12 +269,12 @@ if __name__ == "__main__":
     tst_nearest_sim_feat_df = get_nearest_similarity_feature(online_i2i_sim_dict, online_w2v_emd_dict, online_content_emd_dict, tst_label_df,
                                                              tst_click)
     tst_user_activate_feature_df = get_users_activate_feature(tst_label_df, tst_click)
-    tst_item_popular_feature_df = get_items_popular_feature(tst_label_df, all_click)
+    # tst_item_popular_feature_df = get_items_popular_feature(tst_label_df, all_click)
 
     tst_label_df = tst_label_df.merge(tst_item_sim_feat_df, on=["user_id", "sim_item"])
     tst_label_df = tst_label_df.merge(tst_content_sim_feat_df, on=["user_id", "sim_item"])
     tst_label_df = tst_label_df.merge(tst_w2v_sim_feat_df, on=["user_id", "sim_item"])
     tst_label_df = tst_label_df.merge(tst_nearest_sim_feat_df, on=["user_id", "sim_item"])
     tst_label_df = tst_label_df.merge(tst_user_activate_feature_df, on=["user_id", "sim_item"])
-    tst_label_df = tst_label_df.merge(tst_item_popular_feature_df, on=["user_id", "sim_item"])
-    tst_label_df.to_csv("Datasets/rank/tst_user_item_label_feat_df.csv")
+    # tst_label_df = tst_label_df.merge(tst_item_popular_feature_df, on=["user_id", "sim_item"])
+    tst_label_df.to_csv(save_path+"tst_user_item_label_feat_df.csv")

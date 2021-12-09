@@ -1,6 +1,8 @@
 import tensorflow as tf
 import math
-from .block import Block
+import sys, os
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
+from src.recall.sr_gnn.layers.block import Block
 
 
 class NodeAggregate(Block):

@@ -3,9 +3,11 @@ import logging
 import json
 import os
 import warnings
+import sys
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.recall.sr_gnn.train.data_loader import DataLoader
 from src.recall.sr_gnn.modeling.SR_GNN import SRGNN
-from tqdm import trange
+from tqdm import tqdm, trange
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
@@ -38,7 +40,7 @@ class Trainer(object):
         if 'lr_dc' in self.args:
             self.args.lr_dc = self.args.lr_dc * np.ceil(train.count / batch_size)
 
-        if 'node_weight' in self.args and self.args.node_weight.lower() in ('yes', 'true', 't', 'y', '1'):
+        if 'node_weight' in self.args and self.args.node_weight is not None:
             nw = train.get_node_weight(self.node_count)
             np.save(os.path.join(os.path.dirname(train_path), 'node_weight'), nw)
         kwargs = {k: v for k, v in self.args.__dict__.items()}
@@ -52,7 +54,8 @@ class Trainer(object):
         print_nums = lambda x: ' '.join(map(lambda num: '{:.4f}'.format(num), x))
         # start training
         train_iterator = trange(int(epochs), desc="Epoch")
-        for epoch in range(train_iterator):
+        loss_train, loss_test, hit_, mrr_ = [], [], [], []
+        for epoch in train_iterator:
             slices = train.generate_batch(batch_size)
             ll = []
             logger.info('Total Batch: {}'.format(len(slices)))
@@ -71,7 +74,7 @@ class Trainer(object):
             if not test:
                 logger.info('Epoch: {} Train Loss: {:.4f}'.format(epoch, np.mean(ll)))
                 continue
-
+            loss_train.append(np.mean(ll))
             slices = test.generate_batch(batch_size)
             test_loss_ = []
             hit = [[] for _ in self._at]
@@ -94,6 +97,9 @@ class Trainer(object):
                 if max_test_batch and ii >= max_test_batch - 1: break
             epoch_hits = np.mean(hit, axis=1)
             epoch_mrr = np.mean(mrrs, axis=1)
+            loss_test.append(np.mean(test_loss_))
+            hit_.append(epoch_hits)
+            mrr_.append(epoch_mrr)
             is_improve = 0
             for i in range(len(self._at)):
                 if epoch_hits[i] > best_result[0][i]:
@@ -120,6 +126,10 @@ class Trainer(object):
             if early_stop_epochs and early_stop_counter >= early_stop_epochs:
                 logger.info('After {} epochs not improve, early stop'.format(early_stop_counter))
                 break
+        np.save(open("output/" + 'train_loss.npy', 'wb'), np.array(loss_train))
+        np.save(open("output/" + 'test_loss.npy', 'wb'), np.array(loss_test))
+        np.save(open("output/" + 'recall.npy', 'wb'), np.array(hit_))
+        np.save(open("output/" + 'mrr.npy', 'wb'), np.array(mrr_))
         logger.info('Best Recall and MRR: {},  {}  Epoch: {},  {}'.format(print_nums(best_result[0]),
                                                                           print_nums(best_result[1]),
                                                                           ' '.join(map(str, best_epoch[0])),
@@ -171,7 +181,7 @@ class Trainer(object):
         session_data = DataLoader(session_input, False, False, True,
                                   max_len=max_len, has_uid=has_uid, sq_max_len=sq_max_len)
         batch_size = self.args.batch_size
-        if 'node_weight' in self.args and self.args.node_weight.lower() in ('yes', 'true', 't', 'y', '1') \
+        if 'node_weight' in self.args and self.args.node_weight is not None \
                 and self.args.node_weight_trainable:
             nw = np.zeros([node_count + 1], np.float32)
             self.args.node_weight = nw
@@ -214,9 +224,8 @@ class Trainer(object):
                     item_score = item_score[:rec_count]
                     f.write(json.dumps([headers[j], item_score]) + '\n')
                     total_users += 1
-
-                logger.info('Batch {} Finished, users: {}'.format(i, total_users))
-
+                if i % 200 == 0:
+                    logger.info('Batch {} Finished, users: {}'.format(i, total_users))
             logger.info('Recommend Finished, users: {}'.format(total_users))
 
     def run_node_embedding(self, checkpoint_path, node_count, output_path):

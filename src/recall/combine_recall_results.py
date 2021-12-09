@@ -33,11 +33,10 @@ def combine_recall_results(user_multi_recall_dict, weight_dict=None, save_path="
         else:
             recall_method_weight = weight_dict[method]
 
-        for user_id, sorted_item_list in user_recall_items.items():  # 进行归一化
+        for user_id, sorted_item_list in user_recall_items.items():
             user_recall_items[user_id] = norm_user_recall_items_sim(sorted_item_list)
 
         for user_id, sorted_item_list in user_recall_items.items():
-            # print('user_id')
             final_recall_items_dict.setdefault(user_id, {})
             for item, score in sorted_item_list:
                 final_recall_items_dict[user_id].setdefault(item, 0)
@@ -46,9 +45,9 @@ def combine_recall_results(user_multi_recall_dict, weight_dict=None, save_path="
     final_recall_items_dict_rank = {}
 
     for user, recall_item_dict in final_recall_items_dict.items():
-        final_recall_items_dict_rank[user] = sorted(recall_item_dict.items(), key=lambda x: x[1], reverse=True)[:700]
+        final_recall_items_dict_rank[user] = sorted(recall_item_dict.items(), key=lambda x: x[1], reverse=True)
 
-    # 将多路召回后的最终结果字典保存到本地
+    # save the result
     pickle.dump(final_recall_items_dict_rank, open(os.path.join(save_path, 'final_recall_items_dict.pkl'), 'wb'))
 
     return final_recall_items_dict_rank

@@ -2,6 +2,8 @@ import tensorflow as tf
 import math
 import logging
 import numpy as np
+import sys, os
+sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.recall.sr_gnn.layers.ggnn import GGNN
 from src.recall.sr_gnn.layers.node_aggregate import NodeMELast
 logger = logging.getLogger("model")
@@ -9,14 +11,13 @@ tf.set_random_seed(2021)
 
 
 class SRGNN:
-    def __init__(self, args, node_count, restore_path=None):
-        self.args = args
-        self.l2 = self.args.l2
-        self.lr = self.args.lr
-        self.hidden_size = self.args.hidden_size
+    def __init__(self, node_count, restore_path=None, **kwargs):
+        self.l2 = kwargs.get('l2', 1e-5)
+        self.lr = kwargs.get('lr', 0.001)
+        self.hidden_size = kwargs.get('hidden_size', 256)
         self.var_init = 1.0 / math.sqrt(self.hidden_size)
-        self.sigma = self.args.sigma
-        self.sq_max_length = self.args.sq_max_len
+        self.sigma = kwargs.get('sigma', 10)
+        self.sq_max_length = kwargs.get('sq_max_len', 10)
 
         if self.sq_max_length is not None:
             self.item_position = tf.placeholder(tf.int32, name="item_position")  # batch_size, None
@@ -25,21 +26,21 @@ class SRGNN:
 
         self.batch_size = tf.placeholder(tf.int32)
 
-        node_weight = self.args.node_weight
+        node_weight = kwargs.get('node_weight', None)
         self.node_weight = None
         if node_weight is not None:
             if isinstance(node_weight, str):
                 nw = np.load(node_weight)
             else:
                 nw = node_weight
-            if self.args.node_weight_trainable:
+            if kwargs.get('node_weight_trainable', False):
                 self.node_weight = tf.get_variable('node_weight', [nw.shape[0]], dtype=tf.float32,
                                                    initializer=tf.constant_initializer(nw))
             else:
                 self.node_weight = tf.constant(nw, dtype=tf.float32)
 
-        if self.args.feature_init is not None:
-            init = tf.constant_initializer(np.load(self.args.feature_init))
+        if kwargs.get('feature_init', None) is not None:
+            init = tf.constant_initializer(np.load(kwargs['feature_init']))
             logger.info("Use Feature Init")
         else:
             init = tf.random_uniform_initializer(-self.var_init, self.var_init)
@@ -52,7 +53,7 @@ class SRGNN:
         self.adj_out = tf.placeholder(tf.float32)  # batch_size, None, None
         self.graph_item = tf.placeholder(tf.int32)  # batch_size, None
         self.last_item_node_id = tf.placeholder(tf.int32)  # batch_size
-        self.ggnn = GGNN(self.hidden_size, self.batch_size, self.args.gru_step)
+        self.ggnn = GGNN(self.hidden_size, self.batch_size, kwargs.get('gru_step', 1))
         self.node_aggregator = NodeMELast(self.hidden_size, self.batch_size)
 
         self.loss, self.session_state, self.logits = self.__forward()
@@ -64,8 +65,8 @@ class SRGNN:
             for p in params:
                 f.write(str(p)+'\n')
 
-        lr_dc = self.args.lr_dc
-        dc_rate = self.args.dc_rate
+        lr_dc = kwargs.get('lr_dc', None)
+        dc_rate = kwargs.get('dc_rate', 0.9)
         self.learning_rate = tf.train.exponential_decay(self.lr, global_step=self.global_step, decay_steps=lr_dc,
                                                         decay_rate=dc_rate, staircase=True) if lr_dc else self.lr
         opt = tf.train.AdamOptimizer(learning_rate=self.learning_rate)

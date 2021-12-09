@@ -1,20 +1,23 @@
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
+import argparse
 import sys
 sys.path.append("/content/drive/My Drive/Msc Project")  # if run in colab
 from src.utils.data_utils import get_user_item_time_dict
 from src.data_process.load_data import get_all_click_data
 from src.utils.data_utils import get_hist_and_last_click
 
-
 def get_item_feat_df(feat_dir):
     """
     :param feat_dir: String, the folder contain item feature file
     :return: Dataframe, the item txt embedding and img embedding
     """
-    feat_path = feat_dir + "underexpose_item_feat.csv"
+    feat_path = feat_dir + "item_feat.csv"
     list_item_id = []
     list_txt_vec = []
     list_img_vec = []
@@ -25,7 +28,7 @@ def get_item_feat_df(feat_dir):
         for i in embedding_split:
             embedding.append(float(i))
         return embedding
-    with open(feat_path) as f:
+    with open(feat_path, encoding='utf-8') as f:
         for line in tqdm(f):
             line_split = line.strip().split(',[')
             list_item_id.append(line_split[0])
@@ -45,6 +48,7 @@ def process_item_feat(item_feat_df):
     :return: Dataframe, normalized item feature embedding
     """
     processed_item_feat_df = item_feat_df.copy()
+    processed_item_feat_df['item_id'] = processed_item_feat_df['item_id'].apply(lambda x: int(x))
     # norm
     _scaler = lambda x: x / np.linalg.norm(x)
     processed_item_feat_df["txt_vec"] = processed_item_feat_df["txt_vec"].apply(_scaler)
@@ -61,15 +65,7 @@ def process_item_feat(item_feat_df):
 
 
 def fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode):
-    """
-
-    :param processed_item_feat_df:
-    :param item_content_vec_dict:
-    :param mode:
-    :return:
-    """
     all_click, test_click = get_all_click_data(mode)
-    all_click, last_click = get_hist_and_last_click(all_click)
     # all items and items have feature vector
     all_click_item = set(all_click["item_id"])
     feat_item = set(processed_item_feat_df["item_id"])
@@ -102,16 +98,17 @@ def fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode):
         weighted_vec = np.zeros(256)
         sum_weight = 0.0
         for co_item, weight in co_occur_item_dict.items():
-
-            if co_item in item_content_vec_dict:
+            if co_item in item_content_vec_dict.keys():
                 sum_weight += weight
                 co_item_vec = item_content_vec_dict[co_item]
                 weighted_vec += weight * co_item_vec
-
-        weighted_vec /= sum_weight
-        txt_item_feat_np = weighted_vec[0:128] / np.linalg.norm(weighted_vec[0:128])
-        img_item_feat_np = weighted_vec[128:] / np.linalg.norm(weighted_vec[128:])
-        cnt_vec = np.concatenate([txt_item_feat_np, img_item_feat_np])
+        if sum_weight != 0.0: 
+            weighted_vec /= sum_weight
+            txt_item_feat_np = weighted_vec[0:128] / np.linalg.norm(weighted_vec[0:128])
+            img_item_feat_np = weighted_vec[128:] / np.linalg.norm(weighted_vec[128:])
+            cnt_vec = np.concatenate([txt_item_feat_np, img_item_feat_np])
+        else:
+            cnt_vec = np.zeros(256)
         miss_item_content_vec_dict[miss_item] = cnt_vec
 
     miss_item_feat_df = pd.DataFrame()
@@ -123,15 +120,11 @@ def fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode):
 
 
 def obtain_entire_item_feat_df(mode):
-    """
-
-    :param mode:
-    :return:
-    """
     item_feat_df = get_item_feat_df("Datasets/")
     processed_item_feat_df, item_content_vec_dict = process_item_feat(item_feat_df)
+    
     miss_item_feat_df, miss_item_content_vec_dict = fill_item_feat(processed_item_feat_df, item_content_vec_dict, mode)
-
+    print(miss_item_feat_df)
     processed_item_feat_df = processed_item_feat_df.append(miss_item_feat_df)
     processed_item_feat_df = processed_item_feat_df.reset_index(drop=True)
 
@@ -139,5 +132,11 @@ def obtain_entire_item_feat_df(mode):
 
     processed_item_feat_df.to_csv("Datasets/{}/processed_item_feat.csv".format(mode), sep=",")
     pickle.dump(item_content_vec_dict, open('Datasets/{}/item_content_vec_dict.pkl'.format(mode), 'wb'))
+    print("Done")
     return processed_item_feat_df, item_content_vec_dict
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", default=None, required=True, type=str, help="online or offline")
+    args = parser.parse_args()
+    obtain_entire_item_feat_df(args.mode)
